@@ -1,14 +1,29 @@
 import streamlit as st
 import tensorflow as tf
 import numpy as np
+import os
 import librosa
+import requests
 from matplotlib import pyplot
 from tensorflow.image import resize
 from tensorflow.keras.models import load_model as tf_load_model
 
+MODEL_PATH = "Trained_model.h5"
+MODEL_URL = "https://drive.google.com/uc?export=download&id=19CYF-7LPHUSJsAJ5IZvarF7W4mK_YnpH"
+
+def download_model():
+    if not os.path.exists(MODEL_PATH):
+        print("Downloading model...")
+        response = requests.get(MODEL_URL)
+        with open(MODEL_PATH, "wb") as f:
+            f.write(response.content)
+        print("Download complete.")
+
+download_model()
+
 st.cache_resource()
 def load_Trained_model():
-    model = tf_load_model("./Trained_model.h5")
+    model = tf_load_model(MODEL_PATH)
     return model
 
 def load_and_preprocess_data(file_path, target_shape=(150, 150)):
